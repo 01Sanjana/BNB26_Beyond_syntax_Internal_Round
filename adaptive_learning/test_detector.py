@@ -1,4 +1,4 @@
-from detector import detect_misconception
+from adaptive_learning.detector import detect_misconception
 
 
 # Test 1: Reference vs Copy

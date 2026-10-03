@@ -1,7 +1,6 @@
 import unittest
 
-from engine import get_intervention, evaluate_learning
-
+from adaptive_learning.engine import get_intervention, evaluate_learning
 
 class TestReLearn(unittest.TestCase):
 
