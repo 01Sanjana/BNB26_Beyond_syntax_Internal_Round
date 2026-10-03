@@ -59,5 +59,68 @@ class TestReLearn(unittest.TestCase):
             recurring["explanation"]
         )
 
+    def test_support_levels_change_intervention(self):
+        from adaptive_learning.engine import learner
+
+        learner.history.clear()
+
+        initial = get_intervention("reference_vs_copy")
+
+        learner.record_result(
+            "reference_vs_copy",
+            "persistent"
+        )
+
+        reinforcement = get_intervention(
+            "reference_vs_copy"
+        )
+
+        learner.record_result(
+            "reference_vs_copy",
+            "persistent"
+        )
+
+        guided = get_intervention(
+            "reference_vs_copy"
+        )
+
+        learner.record_result(
+            "reference_vs_copy",
+            "improving"
+        )
+
+        transfer = get_intervention(
+            "reference_vs_copy"
+        )
+
+        learner.record_result(
+            "reference_vs_copy",
+            "resolved"
+        )
+
+        mastery = get_intervention(
+            "reference_vs_copy"
+        )
+
+        self.assertNotEqual(
+            initial["explanation"],
+            reinforcement["explanation"]
+        )
+
+        self.assertNotEqual(
+            reinforcement["explanation"],
+            guided["explanation"]
+        )
+
+        self.assertNotEqual(
+            guided["explanation"],
+            transfer["explanation"]
+        )
+
+        self.assertNotEqual(
+            transfer["explanation"],
+            mastery["explanation"]
+        )
+
 if __name__ == "__main__":
     unittest.main()

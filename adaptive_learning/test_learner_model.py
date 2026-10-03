@@ -1,13 +1,21 @@
-
 import unittest
+import tempfile
+from pathlib import Path
 
 from adaptive_learning.learner_model import LearnerModel
 
 
 class TestLearnerModel(unittest.TestCase):
 
+    def setUp(self):
+        self.learner = LearnerModel()
+        self.learner.history.clear()
+    
     def test_new_learner(self):
-        learner = LearnerModel()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            learner = LearnerModel(
+                Path(temp_dir) / "test_history.json"
+            )
 
         self.assertEqual(
             learner.get_status("reference_vs_copy"),
@@ -15,7 +23,10 @@ class TestLearnerModel(unittest.TestCase):
         )
 
     def test_record_result(self):
-        learner = LearnerModel()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            learner = LearnerModel(
+                Path(temp_dir) / "test_history.json"
+            )
 
         learner.record_result(
             "reference_vs_copy",
@@ -28,7 +39,10 @@ class TestLearnerModel(unittest.TestCase):
         )
 
     def test_attempt_count(self):
-        learner = LearnerModel()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            learner = LearnerModel(
+                Path(temp_dir) / "test_history.json"
+            )
 
         learner.record_result(
             "off_by_one",
@@ -46,7 +60,10 @@ class TestLearnerModel(unittest.TestCase):
         )
 
     def test_progress(self):
-        learner = LearnerModel()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            learner = LearnerModel(
+                Path(temp_dir) / "test_history.json"
+            )
 
         learner.record_result(
             "print_vs_return",
@@ -61,7 +78,10 @@ class TestLearnerModel(unittest.TestCase):
         )
 
     def test_recurring_misconception(self):
-        learner = LearnerModel()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            learner = LearnerModel(
+                Path(temp_dir) / "test_history.json"
+            )
 
         learner.record_result(
             "reference_vs_copy",
@@ -81,6 +101,56 @@ class TestLearnerModel(unittest.TestCase):
             learner.is_recurring("reference_vs_copy")
         )
 
+    def test_support_level(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            learner = LearnerModel(
+                Path(temp_dir) / "test_history.json"
+            )
+
+        self.assertEqual(
+            learner.get_support_level("reference_vs_copy"),
+            "initial"
+        )
+
+        learner.record_result(
+            "reference_vs_copy",
+            "persistent"
+        )
+
+        self.assertEqual(
+            learner.get_support_level("reference_vs_copy"),
+            "reinforcement"
+        )
+
+        learner.record_result(
+            "reference_vs_copy",
+            "persistent"
+        )
+
+        self.assertEqual(
+            learner.get_support_level("reference_vs_copy"),
+            "guided"
+        )
+
+        learner.record_result(
+            "reference_vs_copy",
+            "improving"
+        )
+
+        self.assertEqual(
+            learner.get_support_level("reference_vs_copy"),
+            "transfer"
+        )
+
+        learner.record_result(
+            "reference_vs_copy",
+            "resolved"
+        )
+
+        self.assertEqual(
+            learner.get_support_level("reference_vs_copy"),
+            "mastery"
+        )
 
 if __name__ == "__main__":
     unittest.main()

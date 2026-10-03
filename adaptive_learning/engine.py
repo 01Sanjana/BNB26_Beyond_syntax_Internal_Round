@@ -18,18 +18,34 @@ def get_intervention(misconception):
     if intervention is None:
         return None
 
-    attempts = learner.get_attempts(misconception)
+    support_level = learner.get_support_level(misconception)
 
-    if attempts >= 2:
-        adaptive_intervention = intervention.copy()
+    adaptive_intervention = intervention.copy()
 
+    if support_level == "reinforcement":
         adaptive_intervention["explanation"] = (
             intervention["reinforcement"]
         )
 
-        return adaptive_intervention
+    elif support_level == "guided":
+        adaptive_intervention["explanation"] = (
+            intervention["reinforcement"]
+            + "\n\nLet's work through this step by step."
+        )
 
-    return intervention
+    elif support_level == "transfer":
+        adaptive_intervention["explanation"] = (
+            "You're improving. Let's apply the same idea "
+            "to a new situation."
+        )
+
+    elif support_level == "mastery":
+        adaptive_intervention["explanation"] = (
+            "You've already demonstrated understanding "
+            "of this concept."
+        )
+
+    return adaptive_intervention
 
 
 def evaluate_learning(diagnostic_correct, transfer_correct):
