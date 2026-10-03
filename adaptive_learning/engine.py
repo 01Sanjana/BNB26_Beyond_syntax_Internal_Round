@@ -161,6 +161,6 @@ def run_learning_session(misconception):
 
 if __name__ == "__main__":
 
-    misconception = "reference_vs_copy"
+    misconception = "off_by_one"
 
     run_learning_session(misconception)
