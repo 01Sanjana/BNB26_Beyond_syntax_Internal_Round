@@ -34,7 +34,30 @@ class TestReLearn(unittest.TestCase):
         result = evaluate_learning(True, True)
 
         self.assertEqual(result, "resolved")
+    
+    def test_adaptive_intervention(self):
+        from adaptive_learning.engine import learner
 
+        learner.history.clear()
+
+        first = get_intervention("reference_vs_copy")
+
+        learner.record_result(
+            "reference_vs_copy",
+            "persistent"
+        )
+
+        learner.record_result(
+            "reference_vs_copy",
+            "persistent"
+        )
+
+        recurring = get_intervention("reference_vs_copy")
+
+        self.assertNotEqual(
+            first["explanation"],
+            recurring["explanation"]
+        )
 
 if __name__ == "__main__":
     unittest.main()

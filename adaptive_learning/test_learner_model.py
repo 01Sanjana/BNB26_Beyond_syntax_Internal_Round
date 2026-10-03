@@ -1,3 +1,4 @@
+
 import unittest
 
 from adaptive_learning.learner_model import LearnerModel
@@ -57,6 +58,27 @@ class TestLearnerModel(unittest.TestCase):
         self.assertIn(
             "print_vs_return",
             progress
+        )
+
+    def test_recurring_misconception(self):
+        learner = LearnerModel()
+
+        learner.record_result(
+            "reference_vs_copy",
+            "persistent"
+        )
+
+        self.assertFalse(
+            learner.is_recurring("reference_vs_copy")
+        )
+
+        learner.record_result(
+            "reference_vs_copy",
+            "persistent"
+        )
+
+        self.assertTrue(
+            learner.is_recurring("reference_vs_copy")
         )
 
 

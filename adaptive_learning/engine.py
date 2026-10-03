@@ -13,14 +13,21 @@ learner = LearnerModel()
 
 
 def get_intervention(misconception):
-    """
-    Return the intervention for a detected misconception.
-    """
-
     intervention = INTERVENTIONS.get(misconception)
 
     if intervention is None:
         return None
+
+    attempts = learner.get_attempts(misconception)
+
+    if attempts >= 2:
+        adaptive_intervention = intervention.copy()
+
+        adaptive_intervention["explanation"] = (
+            intervention["reinforcement"]
+        )
+
+        return adaptive_intervention
 
     return intervention
 

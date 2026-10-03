@@ -42,6 +42,14 @@ class LearnerModel:
 
         return self.history[misconception]["attempts"]
 
+    def is_recurring(self, misconception):
+        """
+        Return True if the misconception has appeared
+        in two or more learning attempts.
+        """
+
+        return self.get_attempts(misconception) >= 2
+
     def get_progress(self):
         """
         Return the complete learner history.
