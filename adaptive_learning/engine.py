@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+from detector import detect_misconception
 
 # Load our intervention knowledge base
 DATA_FILE = Path(__file__).parent / "interventions.json"
@@ -161,6 +162,24 @@ def run_learning_session(misconception):
 
 if __name__ == "__main__":
 
-    misconception = "off_by_one"
+    code = """x = [1, 2, 3]
+y = x
+y.append(4)
+print(x)"""
 
-    run_learning_session(misconception)
+    expected_output = "[1, 2, 3]"
+    student_output = "[1, 2, 3, 4]"
+
+    misconception = detect_misconception(
+        code,
+        expected_output,
+        student_output
+    )
+
+    if misconception is None:
+        print("No misconception detected.")
+
+    else:
+        print("\nDetected:", misconception)
+
+        run_learning_session(misconception)
