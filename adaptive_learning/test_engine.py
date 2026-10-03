@@ -1,4 +1,4 @@
-import unittest
+﻿import unittest
 
 from adaptive_learning.engine import get_intervention, evaluate_learning
 
@@ -10,7 +10,7 @@ class TestReLearn(unittest.TestCase):
         self.assertIsNotNone(intervention)
         self.assertEqual(
             intervention["title"],
-            "Assignment creates a copy"
+            "Assignment creates a shared reference"
         )
 
     def test_invalid_intervention(self):

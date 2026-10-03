@@ -1,4 +1,4 @@
-/* =====================================================
+﻿/* =====================================================
    SECTION NAVIGATION
 ===================================================== */
 
@@ -83,38 +83,55 @@ async function submitCode() {
         document.getElementById("codeEditor").value;
 
 
-    console.log("Submitted code:", code);
+    const selected =
+        document.querySelector(".options button.selected");
 
 
-    /*
-        FOR NOW:
-        Dummy response.
+    if (!selected) {
 
-        LATER:
-        Replace this with:
+        alert("Please select an answer first.");
 
-        const result = await analyzeCode(
-            1,
-            code
+        return;
+    }
+
+
+    const studentOutput =
+        selected.innerText
+            .replace(/^[A-D]\s*/, "")
+            .trim();
+
+
+    const expectedOutput =
+        "[1, 2, 3, 4]";
+
+
+    try {
+
+        const result =
+            await analyzeCode(
+                1,
+                code,
+                expectedOutput,
+                studentOutput
+            );
+
+
+        console.log("Backend result:", result);
+
+
+        showDiagnosis(result);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        alert(
+            "Could not connect to the Re:Learn backend. " +
+            "Make sure the Flask server is running."
         );
-    */
-
-
-    const result = {
-
-        correct: false,
-
-        misconception: "Variable References",
-
-        confidence: 0.87,
-
-        evidence:
-            "You appear to be treating y = x as creating a separate list."
-
-    };
-
-
-    showDiagnosis(result);
+    }
 }
 
 
@@ -126,7 +143,8 @@ function showDiagnosis(data) {
 
     document.getElementById(
         "misconception"
-    ).innerText = data.misconception;
+    ).innerText =
+        data.misconception || "No misconception detected";
 
 
     document.getElementById(
@@ -139,7 +157,8 @@ function showDiagnosis(data) {
 
     document.getElementById(
         "evidence"
-    ).innerText = data.evidence;
+    ).innerText =
+        data.evidence;
 
 
     showSection("diagnosis");
@@ -222,3 +241,4 @@ function checkAnswer(button, correct) {
         `;
     }
 }
+

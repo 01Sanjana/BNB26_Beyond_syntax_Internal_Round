@@ -1,7 +1,7 @@
-const API_URL = "http://localhost:5000";
+﻿const API_URL = "http://localhost:5000";
 
 
-async function analyzeCode(questionId, code) {
+async function analyzeCode(questionId, code, expectedOutput, studentOutput) {
 
     const response = await fetch(
         `${API_URL}/analyze`,
@@ -13,11 +13,10 @@ async function analyzeCode(questionId, code) {
             },
 
             body: JSON.stringify({
-
                 question_id: questionId,
-
-                code: code
-
+                code: code,
+                expected_output: expectedOutput,
+                student_output: studentOutput
             })
         }
     );
@@ -34,3 +33,4 @@ async function analyzeCode(questionId, code) {
 
     return await response.json();
 }
+
