@@ -162,13 +162,30 @@ def run_learning_session(misconception):
 
 if __name__ == "__main__":
 
-    code = """x = [1, 2, 3]
-y = x
-y.append(4)
-print(x)"""
+    print("\n================================")
+    print("          RE:LEARN")
+    print("================================")
 
-    expected_output = "[1, 2, 3]"
-    student_output = "[1, 2, 3, 4]"
+    print("\nEnter the student's Python code.")
+    print("Type END on a new line when finished.\n")
+
+    code_lines = []
+
+    while True:
+        line = input()
+
+        if line.strip() == "END":
+            break
+
+        code_lines.append(line)
+
+    code = "\n".join(code_lines)
+
+    print("\nEnter the expected output:")
+    expected_output = input()
+
+    print("\nEnter the student's actual output:")
+    student_output = input()
 
     misconception = detect_misconception(
         code,
@@ -177,9 +194,14 @@ print(x)"""
     )
 
     if misconception is None:
-        print("No misconception detected.")
+        print("\nNo known misconception detected.")
+        print("The response may be correct or may require further analysis.")
 
     else:
-        print("\nDetected:", misconception)
+        print("\n--------------------------------")
+        print("MISCONCEPTION DETECTED")
+        print("--------------------------------")
+
+        print("Type:", misconception)
 
         run_learning_session(misconception)
