@@ -1,7 +1,8 @@
 {
   "reference_vs_copy": {
     "title": "Assignment creates a copy",
-    "explanation": "In Python, assigning one list to another variable does not create a new list. Both variables refer to the same list.",
+    "explanation": "When you write y = x for a list, Python does not create a second list. Instead, x and y become two names that point to the same list object. There is only one list, and both names refer to it. So changing the list through y also changes what you see through x.",
+    "reinforcement": "Remember: assigning one list to another does not create a new list. Both variables refer to the same underlying list object.",
     "example": {
       "code": "x = [1, 2, 3]\ny = x\ny.append(4)\nprint(x)",
       "answer": "[1, 2, 3, 4]"
@@ -31,6 +32,7 @@
   "off_by_one": {
     "title": "Loop boundary misunderstanding",
     "explanation": "Python's range() includes the starting value but excludes the ending value. This can cause a loop to execute a different number of times than expected.",
+    "reinforcement": "Remember: range() includes the starting value but excludes the ending value.",
     "example": {
       "code": "for i in range(3):\n    print(i)",
       "answer": "0, 1, 2"
@@ -60,6 +62,7 @@
   "print_vs_return": {
     "title": "Confusing print() with return",
     "explanation": "print() displays a value, while return sends a value back from a function so that it can be stored or used elsewhere.",
+    "reinforcement": "Remember: print() displays a value, while return sends a value back to the caller so it can be stored or used.",
     "example": {
       "code": "def add(a, b):\n    return a + b\n\nresult = add(2, 3)\nprint(result)",
       "answer": "5"

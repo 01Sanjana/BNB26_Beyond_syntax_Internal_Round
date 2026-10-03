@@ -52,32 +52,115 @@ def get_status_message(status):
 
     return messages[status]
 
+def ask_question(question_data):
+    """
+    Display a multiple-choice question and return
+    whether the student's answer is correct.
+    """
+
+    print("\n" + question_data["question"])
+
+    for index, option in enumerate(question_data["options"], start=1):
+        print(f"{index}. {option}")
+
+    while True:
+        try:
+            answer = int(input("\nYour answer (1-4): "))
+
+            if 1 <= answer <= len(question_data["options"]):
+                return answer - 1 == question_data["correct"]
+
+            print("Please choose a valid option.")
+
+        except ValueError:
+            print("Please enter a number.")
+
+
+def run_learning_session(misconception):
+    """
+    Run a complete adaptive learning session.
+    """
+
+    intervention = get_intervention(misconception)
+
+    if intervention is None:
+        print("Misconception not found.")
+        return
+
+    print("\n================================")
+    print("          RE:LEARN")
+    print("================================")
+
+    print("\nMisconception detected:")
+    print(intervention["title"])
+
+    print("\n--- Targeted Intervention ---")
+    print(intervention["explanation"])
+
+    print("\nExample:")
+    print(intervention["example"]["code"])
+
+    print("\nExpected output:")
+    print(intervention["example"]["answer"])
+
+    print("\n--- Diagnostic Question ---")
+
+    diagnostic_correct = ask_question(
+        intervention["diagnostic"]
+    )
+
+    if diagnostic_correct:
+        print("\n✓ Correct! Let's see if you can apply it somewhere new.")
+
+    else:
+        print("\n✗ Not quite. Let's revisit the idea.")
+
+        print("\n--- Reinforcement ---")
+        print(intervention["reinforcement"])
+
+        print("\n--- Diagnostic Retry ---")
+
+        diagnostic_correct = ask_question(
+            intervention["diagnostic"]
+        )
+
+        if diagnostic_correct:
+            print("\n✓ Great! Your second attempt shows improvement.")
+
+        else:
+            print("\n✗ The misconception is still present.")
+
+            print("\n================================")
+            print("       LEARNING RESULT")
+            print("================================")
+
+            print("\nStatus: PERSISTENT")
+            print("The concept still needs more practice.")
+
+            return
+
+    print("\n--- Transfer Question ---")
+
+    transfer_correct = ask_question(
+        intervention["transfer"]
+    )
+
+    status = evaluate_learning(
+        diagnostic_correct,
+        transfer_correct
+    )
+
+    print("\n================================")
+    print("       LEARNING RESULT")
+    print("================================")
+
+    print("\nStatus:", status.upper())
+
+    print(get_status_message(status))
+
+
 if __name__ == "__main__":
 
     misconception = "reference_vs_copy"
 
-    intervention = get_intervention(misconception)
-
-    if intervention:
-        print("\n--- Re:Learn Intervention ---")
-        print("Misconception:", intervention["title"])
-        print("\nExplanation:")
-        print(intervention["explanation"])
-
-        print("\nDiagnostic Question:")
-        print(intervention["diagnostic"]["question"])
-
-        print("\nTransfer Question:")
-        print(intervention["transfer"]["question"])
-
-        # Temporary test
-        status = evaluate_learning(
-            diagnostic_correct=True,
-            transfer_correct=True
-        )
-
-        print("\nLearning Status:", status)
-        print(get_status_message(status))
-
-    else:
-        print("Misconception not found.")
+    run_learning_session(misconception)
