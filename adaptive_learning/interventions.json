@@ -1,0 +1,88 @@
+{
+  "reference_vs_copy": {
+    "title": "Assignment creates a copy",
+    "explanation": "In Python, assigning one list to another variable does not create a new list. Both variables refer to the same list.",
+    "example": {
+      "code": "x = [1, 2, 3]\ny = x\ny.append(4)\nprint(x)",
+      "answer": "[1, 2, 3, 4]"
+    },
+    "diagnostic": {
+      "question": "If a = [10, 20] and b = a, what happens to a when we execute b.append(30)?",
+      "options": [
+        "a remains [10, 20]",
+        "a becomes [10, 20, 30]",
+        "Python gives an error",
+        "Only b changes"
+      ],
+      "correct": 1
+    },
+    "transfer": {
+      "question": "Suppose d1 = {'x': 1} and d2 = d1. If d2['y'] = 2, what will d1 contain?",
+      "options": [
+        "{'x': 1}",
+        "{'y': 2}",
+        "{'x': 1, 'y': 2}",
+        "An error occurs"
+      ],
+      "correct": 2
+    }
+  },
+
+  "off_by_one": {
+    "title": "Loop boundary misunderstanding",
+    "explanation": "Python's range() includes the starting value but excludes the ending value. This can cause a loop to execute a different number of times than expected.",
+    "example": {
+      "code": "for i in range(3):\n    print(i)",
+      "answer": "0, 1, 2"
+    },
+    "diagnostic": {
+      "question": "How many times will this loop execute?\n\nfor i in range(5):\n    print(i)",
+      "options": [
+        "4 times",
+        "5 times",
+        "6 times",
+        "It never executes"
+      ],
+      "correct": 1
+    },
+    "transfer": {
+      "question": "Which values are produced by range(2, 6)?",
+      "options": [
+        "2, 3, 4, 5",
+        "2, 3, 4, 5, 6",
+        "3, 4, 5, 6",
+        "2, 3, 4"
+      ],
+      "correct": 0
+    }
+  },
+
+  "print_vs_return": {
+    "title": "Confusing print() with return",
+    "explanation": "print() displays a value, while return sends a value back from a function so that it can be stored or used elsewhere.",
+    "example": {
+      "code": "def add(a, b):\n    return a + b\n\nresult = add(2, 3)\nprint(result)",
+      "answer": "5"
+    },
+    "diagnostic": {
+      "question": "What does return do inside a function?",
+      "options": [
+        "It displays the value on the screen",
+        "It sends a value back to the caller",
+        "It repeats the function",
+        "It stops Python completely"
+      ],
+      "correct": 1
+    },
+    "transfer": {
+      "question": "What will result contain?\n\ndef double(x):\n    return x * 2\n\nresult = double(5)",
+      "options": [
+        "None",
+        "5",
+        "10",
+        "It prints 10 but result is empty"
+      ],
+      "correct": 2
+    }
+  }
+}
