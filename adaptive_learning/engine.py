@@ -1,26 +1,51 @@
 import json
 from pathlib import Path
 
-from detector import detect_misconception
+from adaptive_learning.detector import detect_misconception
+from adaptive_learning.learner_model import LearnerModel
 
 # Load our intervention knowledge base
 DATA_FILE = Path(__file__).parent / "interventions.json"
 
 with open(DATA_FILE, "r", encoding="utf-8") as file:
     INTERVENTIONS = json.load(file)
+learner = LearnerModel()
 
 
 def get_intervention(misconception):
-    """
-    Return the intervention for a detected misconception.
-    """
-
     intervention = INTERVENTIONS.get(misconception)
 
     if intervention is None:
         return None
 
-    return intervention
+    support_level = learner.get_support_level(misconception)
+
+    adaptive_intervention = intervention.copy()
+
+    if support_level == "reinforcement":
+        adaptive_intervention["explanation"] = (
+            intervention["reinforcement"]
+        )
+
+    elif support_level == "guided":
+        adaptive_intervention["explanation"] = (
+            intervention["reinforcement"]
+            + "\n\nLet's work through this step by step."
+        )
+
+    elif support_level == "transfer":
+        adaptive_intervention["explanation"] = (
+            "You're improving. Let's apply the same idea "
+            "to a new situation."
+        )
+
+    elif support_level == "mastery":
+        adaptive_intervention["explanation"] = (
+            "You've already demonstrated understanding "
+            "of this concept."
+        )
+
+    return adaptive_intervention
 
 
 def evaluate_learning(diagnostic_correct, transfer_correct):
@@ -131,12 +156,31 @@ def run_learning_session(misconception):
         else:
             print("\n✗ The misconception is still present.")
 
+            status = "persistent"
+
+            learner.record_result(
+                misconception,
+                status
+            )
+
             print("\n================================")
             print("       LEARNING RESULT")
             print("================================")
 
             print("\nStatus: PERSISTENT")
             print("The concept still needs more practice.")
+
+            print("\n--- Learner History ---")
+
+            print(
+                "Attempts:",
+                learner.get_attempts(misconception)
+            )
+
+            print(
+                "Latest status:",
+                learner.get_status(misconception)
+            )   
 
             return
 
@@ -151,6 +195,11 @@ def run_learning_session(misconception):
         transfer_correct
     )
 
+    learner.record_result(
+        misconception,
+        status
+    )
+
     print("\n================================")
     print("       LEARNING RESULT")
     print("================================")
@@ -159,6 +208,17 @@ def run_learning_session(misconception):
 
     print(get_status_message(status))
 
+    print("\n--- Learner History ---")
+
+    print(
+        "Attempts:",
+        learner.get_attempts(misconception)
+    )
+
+    print(
+        "Latest status:",
+        learner.get_status(misconception)
+    )
 
 if __name__ == "__main__":
 
